@@ -1,34 +1,25 @@
-# VGV Cursor Team Marketplace (public)
+# VGV Cursor Team Marketplace
 
-Shareable **VGV Wingspan + Flutter** plugins for any team. No Sea Trials
-custom content.
+Cursor port of the **Very Good Ventures AI plugin stack** for Cursor Team
+Marketplaces: Wingspan workflows and Flutter/Dart skills.
 
-Sea Trials engineers also import the **private**
-`sea-trials-vgv-cursor-marketplace` (sea-trials plugin only).
-
-Keep this GitHub repo **public** so other teams can import without collaborator
-access. Sea Trials secrets stay in the private marketplace repo.
+Forked from upstream VGV releases (`vgv-wingspan`, `vgv-ai-flutter-plugin`)
+with Cursor-specific skills, flat agents, adapter rules, MCP, and hooks.
 
 | Plugin | What you get |
 | --- | --- |
-| `vgv-wingspan` | `/brainstorm`, `/plan`, `/build`, `/code-review`, … + 10 review agents + adapter rules + ask-question MCP |
-| `vgv-ai-flutter-plugin` | Flutter/Dart skills + `flutter-reviewer` (optional — skip on non-Flutter repos) |
+| `vgv-wingspan` | `/brainstorm`, `/plan`, `/build`, `/code-review`, … + review agents + adapter rules + ask-question MCP |
+| `vgv-ai-flutter-plugin` | Flutter/Dart skills + `flutter-reviewer` (enable on Flutter repos) |
 
-## Install (other teams)
+## Install
 
 1. Cursor Dashboard → **Team Marketplaces** → import
    `https://github.com/hughesyadaddy/vgv-cursor-marketplace`
-2. Enable **VGV Wingspan** (required). Enable **VGV AI Flutter** if Flutter.
-3. **Do not** import the Sea Trials marketplace unless you work in that monorepo.
+2. Enable **VGV Wingspan** (required).
+3. Enable **VGV AI Flutter** on Flutter/Dart repos.
 4. **Cmd+Q** → reopen Cursor. Use **Composer 2.5** for `/plan` handoffs.
 
-## Sync (maintainers, from sea_trials_universal)
+## Upstream
 
-```bash
-./scripts/cursor-link-vgv-skills.sh --emit-wingspan-shareable
-./scripts/cursor-link-vgv-skills.sh --emit-cursor-plugin   # optional: fork skills
-./scripts/scaffold-vgv-only-cursor-marketplace.sh
-cd ~/dev/vgv-cursor-marketplace
-git add -A && git commit -m "chore: bump VGV plugins" && git push
-# Dashboard → Refresh Team Marketplace
-```
+Official VGV plugins target Claude Code. This repo is the Cursor dual-manifest
+fork (same-chat phase handoffs, AskQuestion + `vgv-ask-question` fallback).
