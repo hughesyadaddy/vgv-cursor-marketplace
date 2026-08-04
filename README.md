@@ -1,10 +1,13 @@
-# VGV Cursor Team Marketplace (private — shareable teams)
+# VGV Cursor Team Marketplace (public)
 
-**Not for Sea Trials monorepo work.** Other teams import this marketplace.
-Sea Trials engineers use `sea-trials-vgv-cursor-marketplace` instead.
+Shareable **VGV Wingspan + Flutter** plugins for any team. No Sea Trials
+custom content.
 
-Keep this GitHub repo **private**. Add only the other team’s GitHub users (or
-org team) as collaborators, then import in their Cursor org’s Dashboard.
+Sea Trials engineers also import the **private**
+`sea-trials-vgv-cursor-marketplace` (sea-trials plugin only).
+
+Keep this GitHub repo **public** so other teams can import without collaborator
+access. Sea Trials secrets stay in the private marketplace repo.
 
 | Plugin | What you get |
 | --- | --- |
