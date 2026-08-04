@@ -1,0 +1,22 @@
+{
+  "name": "vgv-cursor-marketplace",
+  "owner": {
+    "name": "Very Good Ventures (Sea Trials port)",
+    "email": "alex@seatrials.com"
+  },
+  "metadata": {
+    "description": "Shareable VGV Cursor plugins: Wingspan workflows + Flutter skills. No Sea Trials custom content."
+  },
+  "plugins": [
+    {
+      "name": "vgv-wingspan",
+      "source": "./plugins/vgv-wingspan",
+      "description": "VGV Wingspan: skills, review agents, adapter rules, ask-question MCP."
+    },
+    {
+      "name": "vgv-ai-flutter-plugin",
+      "source": "./plugins/vgv-ai-flutter-plugin",
+      "description": "VGV AI Flutter Plugin: Dart/Flutter skills + flutter-reviewer."
+    }
+  ]
+}
