@@ -22,4 +22,4 @@ with Cursor-specific skills, flat agents, adapter rules, MCP, and hooks.
 ## Upstream
 
 Official VGV plugins target Claude Code. This repo is the Cursor dual-manifest
-fork (same-chat phase handoffs, AskQuestion + `vgv-ask-question` fallback).
+fork (same-chat phase handoffs, native host AskQuestion).
