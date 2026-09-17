@@ -2,5 +2,5 @@
 
 | Plugin | Source | SHA / note |
 | --- | --- | --- |
-| vgv-wingspan | monorepo tools/cursor-vgv-wingspan | `704b836312ec913e7c34a6f43b16cc2cb9b52791` + shareable bundle from monorepo |
-| vgv-ai-flutter-plugin | monorepo tools/cursor-vgv-flutter | `704b836312ec913e7c34a6f43b16cc2cb9b52791` |
+| vgv-wingspan | monorepo tools/cursor-vgv-wingspan | `f46110af2d724062aa3ccbe8e78137e2d54ff52a` + shareable bundle from monorepo |
+| vgv-ai-flutter-plugin | monorepo tools/cursor-vgv-flutter | `f46110af2d724062aa3ccbe8e78137e2d54ff52a` |
