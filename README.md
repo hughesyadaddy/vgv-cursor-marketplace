@@ -56,6 +56,17 @@ parent chat model for those.
 
 ## Claude Code setup
 
+**Sea Trials team:** do **not** import this repo in Cursor if you use the
+private `sea-trials-cursor-marketplace` aggregator — it already vendors
+Wingspan and Flutter. Importing both duplicates skills and MCP.
+
+**Wingspan on Claude Code** — install upstream (not this Cursor fork):
+
+```bash
+claude plugin marketplace add VeryGoodOpenSource/very-good-claude-code-marketplace
+claude plugin install vgv-wingspan
+```
+
 **Native (preferred):** Claude Code exposes **AskUserQuestion** as a host
 tool — no MCP required for structured handoffs.
 
