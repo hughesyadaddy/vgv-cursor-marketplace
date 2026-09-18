@@ -47,7 +47,7 @@ on Composer 2.5 more reliably than on Grok 4.5 or some Agent modes.
 
 | Phase | Parent model | Why |
 | --- | --- | --- |
-| Brainstorm / plan / refine handoffs | **Composer 2.5** | Native AskQuestion picker |
+| Brainstorm / plan / refine handoffs | **Composer 2.5** (not Auto) | Best chance of native AskQuestion; verify schema |
 | Build / code-review / hotfix | Composer 2.5 or Claude Sonnet | Coding + subagents |
 | Avoid for question-heavy work | **Grok 4.5** | No AskQuestion |
 
@@ -78,7 +78,7 @@ tool — no MCP required for structured handoffs.
 
 Replace `<hash>` with the commit folder under
 `~/.cursor/plugins/cache/__DEFAULT__/vgv-wingspan/`. Prefer the bundled
-plugin `mcp.json` on Cursor (uses `${PLUGIN_ROOT}` — no hand path).
+plugin `mcp.json` on Cursor (uses `${CURSOR_PLUGIN_ROOT}` — no hand path).
 
 ## Upstream
 
