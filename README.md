@@ -88,9 +88,9 @@ parent chat model for those.
 
 ## Claude Code setup
 
-**Sea Trials team:** do **not** import this repo in Cursor if you use the
-private `sea-trials-cursor-marketplace` aggregator — it already vendors
-Wingspan and Flutter. Importing both duplicates skills and MCP.
+**Aggregated installs:** if your org vendors this repo inside its own
+team marketplace (as a submodule), do **not** also import this repo
+directly in Cursor — importing both duplicates skills and MCP servers.
 
 **Wingspan on Claude Code** — install upstream (not this Cursor fork):
 
