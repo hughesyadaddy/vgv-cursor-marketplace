@@ -39,6 +39,38 @@ Canonical protocol:
 
 Always-on rule: `plugins/vgv-wingspan/rules/vgv-ask-question.mdc`.
 
+## Parallel-first workflow
+
+`/plan` and `/build` are parallel-first on both hosts. `/plan` writes a
+`## Parallel execution map` — a table of shards (`id`, `paths`,
+`dependsOn`, `tier`, `summary`) plus a `shards` JSON block — where each
+shard owns disjoint path prefixes and files that several shards need
+(barrels, manifests, l10n) are `sharedFiles` owned by the integrator.
+`/build` reads the map and runs a rolling window of up to `maxParallel`
+subagents on **one branch**: every ready shard launches at once, and each
+returning worker immediately unblocks the next. The parent integrates the
+shared files, validates, then runs the usual review and ship phases.
+Plans without a map still build sequentially. Splitting into separate PRs
+is opt-in.
+
+Spec:
+[`plugins/vgv-wingspan/skills/shared/references/parallel-execution-map.md`](plugins/vgv-wingspan/skills/shared/references/parallel-execution-map.md)
+
+Model tiers (user can override any row):
+
+| Role | Tier | Cursor | Claude Code |
+| --- | --- | --- | --- |
+| Planning, technical review, integration | high-reasoning | parent chat model | `inherit` / `opus` |
+| `reasoning` shard worker | high-reasoning | inherit | `inherit` / `opus` |
+| `code` shard worker | fast coding | `composer-2.5` | `sonnet` |
+| `mechanical` shard worker | cheapest | `composer-2.5` (or another fast slug) | `haiku` |
+| Review agents | pinned | per agent file | per agent file |
+
+On Cursor, `composer-2.5` is the confirmed fan-out slug; confirm any other
+slug with `agent --list-models` before pinning it. The Claude and Cursor
+copies of the parallel sections are kept identical by
+`scripts/check-skill-copies.mjs` (runs in CI).
+
 ## Composer 2.5 for handoffs
 
 Use **Composer 2.5** as the parent chat model for `/brainstorm`, `/plan`,

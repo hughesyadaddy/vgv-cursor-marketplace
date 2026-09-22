@@ -25,3 +25,16 @@ jobs:
       - name: Validate ${{ matrix.plugin }}
         working-directory: ${{ matrix.plugin }}
         run: claude plugin validate .
+
+  skill-copies:
+    name: Wingspan skill copies in sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check Claude vs Cursor skill copies
+        run: node scripts/check-skill-copies.mjs
+      - name: Unit tests
+        run: node --test scripts/check-skill-copies.test.mjs
