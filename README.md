@@ -23,7 +23,9 @@ with Cursor-specific skills, flat agents, adapter rules, MCP, and hooks.
 
 **Jira sprint folders** (user stories your developers implement) are **not**
 Wingspan `/plan`. Use the **sea-trials** plugin from
-[`sea-trials-cursor-marketplace`](https://github.com/hughesyadaddy/sea-trials-cursor-marketplace):
+[`sea-trials-cursor-marketplace`](https://github.com/hughesyadaddy/sea-trials-cursor-marketplace)
+(Team Marketplace → enable **sea-trials**; refresh after pulls — current
+release **2026.10.09.6**: agnostic `st-run`, in-chat PR review monitor):
 
 | Skill | Purpose |
 | --- | --- |
