@@ -36,6 +36,14 @@ Card voice lives in that repo:
 `/plan` for **feature design** before or alongside sprint cards, not as a
 substitute for `/st-sprint-plan`.
 
+Lint sprint markdown from an app repo:
+
+```bash
+node "$ST_PLUGIN_ROOT/scripts/st-run.mjs" sprint-lint -- sprint_planning/<folder>
+```
+
+(`ST_PLUGIN_ROOT` is set by `st-run`; see sea-trials plugin README.)
+
 ## Structured questions (dual-host)
 
 VGV skills show **Question** + **Options** blocks — pass them to a
