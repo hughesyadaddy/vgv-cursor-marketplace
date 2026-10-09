@@ -19,6 +19,23 @@ with Cursor-specific skills, flat agents, adapter rules, MCP, and hooks.
 3. Enable **VGV AI Flutter** on Flutter/Dart repos.
 4. **Cmd+Q** → reopen Cursor. Use **Composer 2.5** for `/plan` handoffs.
 
+## Sprint planning (Sea Trials / All-in PM Prep)
+
+**Jira sprint folders** (user stories your developers implement) are **not**
+Wingspan `/plan`. Use the **sea-trials** plugin from
+[`sea-trials-cursor-marketplace`](https://github.com/hughesyadaddy/sea-trials-cursor-marketplace):
+
+| Skill | Purpose |
+| --- | --- |
+| `/st-sprint-plan` | Create `sprint_planning/<name>/` dev-ready cards |
+| `/st-sprint-refine` | Humanize, cull non-defects, fix audit-flavored cards |
+| `/st-jira-upload` | Sync to Jira; delete withdrawn issues (no `[Cancelled]` ghosts) |
+
+Card voice lives in that repo:
+`plugins/sea-trials/skills/_sources/sprint-dev-voice.md`. Use Wingspan
+`/plan` for **feature design** before or alongside sprint cards, not as a
+substitute for `/st-sprint-plan`.
+
 ## Structured questions (dual-host)
 
 VGV skills show **Question** + **Options** blocks — pass them to a
