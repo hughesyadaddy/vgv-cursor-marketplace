@@ -1,7 +1,8 @@
 # Consumer push gate (repo override)
 
-Some repos own a stricter push path than `/create-pr`. Detect it before
-shipping — any one of these means the repo has its own gate:
+Some repos document a stricter push path than Wingspan's default scoped
+validation. Detect it before shipping — any one of these means the repo
+**may** own its own gate:
 
 - `package.json` defines a `pr-review-push`, `push-gate`, or `prepush`
   script
@@ -9,11 +10,13 @@ shipping — any one of these means the repo has its own gate:
 - A consumer plugin ships a ship/harden skill (for example a
   `*-pr-ship` or `*-pre-push-harden` skill)
 
-When a gate exists:
+Wingspan skills **never** mandate these gates by default. When a gate
+exists and the user (or repo `AGENTS.md`) requires it:
 
-- **Never** call `/create-pr skip-checks`
-- Run the repo's gate command (or its ship skill) and let it push
-- Multi-package plans: prefer the consumer's parallel build skill when
-  one exists, after `/plan`
+- Run the repo's gate command (or its ship skill) instead of assuming
+  `/create-pr` already ran a broad suite
+- Call `/create-pr` for commit/scoped validation and PR creation unless
+  the repo gate fully replaces that flow
 
-When no gate exists, the default **Ship** flow applies.
+When no gate is required, the default **Ship** flow uses scoped commit
+validation and `/create-pr` only.
