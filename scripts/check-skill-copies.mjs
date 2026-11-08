@@ -26,6 +26,143 @@ export const TRACKED_REFERENCES = ['references/parallel-execution-map.md'];
 /** Skills that must ship the tracked reference in both copies. */
 export const REQUIRED_REFERENCE_SKILLS = ['plan', 'build'];
 
+/** Shared policy docs that must match across Claude and Cursor trees. */
+export const POLICY_MIRROR_PAIRS = [
+  {
+    label: 'scoped-commit-validation',
+    claude: 'skills/shared/references/scoped-commit-validation.md',
+    cursor: 'cursor/skills/shared/references/scoped-commit-validation.md',
+  },
+  {
+    label: 'consumer-push-scripts',
+    claude: 'skills/shared/references/consumer-push-scripts.md',
+    cursor: 'cursor/skills/shared/references/consumer-push-scripts.md',
+  },
+];
+
+/** Wingspan paths scanned for contradictory broad-gate instructions. */
+export const POLICY_SCAN_FILES = [
+  'skills/shared/references/scoped-commit-validation.md',
+  'skills/shared/references/consumer-push-scripts.md',
+  'skills/shared/references/drive-to-green.md',
+  'skills/shared/references/validate-and-fix.md',
+  'skills/create-pr/SKILL.md',
+  'skills/create-pr/references/ci-checks.md',
+  'skills/create-pr/references/push.md',
+  'skills/build/SKILL.md',
+  'skills/build/references/consumer-push-gate.md',
+  'skills/hotfix/SKILL.md',
+  'cursor/skills/shared/references/scoped-commit-validation.md',
+  'cursor/skills/shared/references/consumer-push-scripts.md',
+  'cursor/skills/create-pr/SKILL.md',
+  'cursor/skills/create-pr/references/ci-checks.md',
+  'cursor/skills/create-pr/references/push.md',
+  'cursor/skills/build/SKILL.md',
+  'cursor/skills/build/references/consumer-push-gate.md',
+  'cursor/skills/hotfix/SKILL.md',
+  'rules/vgv-cli-required.mdc',
+];
+
+/** Phrases that re-instate broad commit/push gates (forbidden in POLICY_SCAN_FILES). */
+export const POLICY_FORBIDDEN_PATTERNS = [
+  { id: 'consumer-documents-required', pattern: /consumer repo documents them as required/i },
+  { id: 'documents-mandatory-user', pattern: /documents that command as mandatory and the user requires/i },
+  { id: 'run-gate-when-documented', pattern: /run that gate only when the repo documents/i },
+  { id: 'ship-skill-requires', pattern: /\(or ship skill\) requires it/i },
+  { id: 'agents-requires-it', pattern: /\(or repo `AGENTS\.md`\) requires it/i },
+  { id: 'when-repo-documents-user', pattern: /when the repo documents it and the user/i },
+  { id: 'skip-checks', pattern: /skip-checks/i },
+  { id: 'create-pr-skip-checks', pattern: /\/create-pr skip-checks/i },
+];
+
+export function normalizePolicyDualHost(text) {
+  return normalize(text)
+    .replace(
+      /\*\*AskQuestion\*\* \(Cursor\) \/ \*\*AskUserQuestion\*\* \(Claude Code\)/g,
+      'HOST_QUESTION_TOOL',
+    )
+    .replace(/\*\*AskUserQuestion\*\*/g, 'HOST_QUESTION_TOOL')
+    .replace(/\*\*AskQuestion\*\*/g, 'HOST_QUESTION_TOOL')
+    .replace(/HOST_QUESTION_TOOL\s+/g, 'HOST_QUESTION_TOOL ');
+}
+
+/**
+ * @param {string} content
+ * @returns {string[]} forbidden pattern ids found
+ */
+export function findForbiddenPolicyPatterns(content) {
+  return POLICY_FORBIDDEN_PATTERNS.filter(({ pattern }) => pattern.test(content)).map(
+    ({ id }) => id,
+  );
+}
+
+/**
+ * @returns {string[]} mirror drift errors
+ */
+export function checkPolicyMirrors(pluginDir) {
+  const errors = [];
+
+  for (const pair of POLICY_MIRROR_PAIRS) {
+    const a = readIfExists(path.join(pluginDir, pair.claude));
+    const b = readIfExists(path.join(pluginDir, pair.cursor));
+    if (a === null || b === null) {
+      errors.push(`policy mirror ${pair.label}: missing file on one side`);
+      continue;
+    }
+    if (normalizePolicyDualHost(a) !== normalizePolicyDualHost(b)) {
+      errors.push(`policy mirror ${pair.label}: Claude and Cursor copies differ`);
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * @returns {string[]} contradiction and required-phrase errors
+ */
+export function checkPolicyContradictions(pluginDir) {
+  const errors = [];
+
+  for (const rel of POLICY_SCAN_FILES) {
+    const file = path.join(pluginDir, rel);
+    const content = readIfExists(file);
+    if (content === null) {
+      errors.push(`policy scan: missing ${rel}`);
+      continue;
+    }
+    for (const id of findForbiddenPolicyPatterns(content)) {
+      errors.push(`policy contradiction in ${rel}: forbidden pattern ${id}`);
+    }
+  }
+
+  const scoped = readIfExists(
+    path.join(pluginDir, 'skills/shared/references/scoped-commit-validation.md'),
+  );
+  if (scoped !== null) {
+    if (!/user explicitly starts separate\s+work/i.test(scoped)) {
+      errors.push('policy: scoped-commit-validation must require explicit user for broad work');
+    }
+    if (!/\*\*Never mandatory\*\*/i.test(scoped)) {
+      errors.push('policy: scoped-commit-validation must include Never mandatory broad gates');
+    }
+    if (!/\*\*never\*\* bypass hooks/i.test(scoped)) {
+      errors.push('policy: scoped-commit-validation must forbid hook bypass');
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * @returns {string[]} policy drift and contradiction errors
+ */
+export function checkScopedValidationPolicy(pluginDir) {
+  return [
+    ...checkPolicyMirrors(pluginDir),
+    ...checkPolicyContradictions(pluginDir),
+  ];
+}
+
 function normalize(text) {
   return text
     .replace(/\r\n/g, '\n')
@@ -172,6 +309,16 @@ export function checkSkillCopies(pluginDir) {
   return { errors, checked };
 }
 
+/**
+ * Parallel sections + scoped-validation policy mirrors and contradictions.
+ * @returns {{ errors: string[], checked: string[] }}
+ */
+export function checkWingspanCopies(pluginDir) {
+  const { errors, checked } = checkSkillCopies(pluginDir);
+  const policyErrors = checkScopedValidationPolicy(pluginDir);
+  return { errors: [...errors, ...policyErrors], checked };
+}
+
 export function defaultPluginDir() {
   const here = path.dirname(fileURLToPath(import.meta.url));
   return path.resolve(here, '..', 'plugins', 'vgv-wingspan');
@@ -179,7 +326,7 @@ export function defaultPluginDir() {
 
 function main(argv) {
   const pluginDir = path.resolve(argv[0] ?? defaultPluginDir());
-  const { errors, checked } = checkSkillCopies(pluginDir);
+  const { errors, checked } = checkWingspanCopies(pluginDir);
   console.log(`check-skill-copies: ${pluginDir}`);
   console.log(`checked skills: ${checked.join(', ') || '(none)'}`);
   if (errors.length > 0) {
@@ -187,7 +334,7 @@ function main(argv) {
     console.error(`${errors.length} problem(s) found`);
     return 1;
   }
-  console.log('OK: Claude and Cursor skill copies agree');
+  console.log('OK: Claude and Cursor skill copies and scoped-validation policy agree');
   return 0;
 }
 

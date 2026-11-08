@@ -401,12 +401,11 @@ Whatever commits this build produced are local. Pushing and opening a PR is outw
   2. **Push and open the PR now**: proceed this once.
   3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's CLAUDE.md) so future builds skip this prompt.
 
-**Repos with their own push gate** (a `pr-review-push` / `push-gate`
-script, a push-gate section in `CLAUDE.md`/`AGENTS.md`, or a consumer
-plugin ship skill): run that gate only when the repo documents it and the
-user requires it — Wingspan does not mandate it by default.
+Consumer `prepush`, `push-gate`, and ship skills are **not** ship gates —
+see [consumer-push-scripts](../shared/references/consumer-push-scripts.md).
+Run them only when the user explicitly starts that separate work in chat.
 
-**Other repos:** call `/create-pr` — scoped validation already ran above;
+**Ship:** call `/create-pr` — scoped validation already ran above;
 create-pr re-validates only paths in the final commit if needed. The PR
 body uses the [PR template](references/pr-template.md).
 

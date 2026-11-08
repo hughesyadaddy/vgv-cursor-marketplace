@@ -22,8 +22,9 @@ On each changed path in the commit or uncommitted chunk:
 pnpm agent-validate -- flutter/packages/foo/lib/a.dart flutter/packages/foo/test/a_test.dart
 ```
 
-Without explicit paths, `pnpm agent-validate` inspects only uncommitted
-changed files when the consumer repo ships that script.
+`pnpm agent-validate` without paths may inspect uncommitted changes in
+some consumer repos — still scoped to the diff, never whole-package.
+Always prefer passing explicit paths.
 
 ## Non-Dart
 
@@ -57,12 +58,13 @@ agent gates before commit.
 `~/.cursor/mcp.json` includes `very-good-cli` when **vgv-ai-flutter-plugin**
 is enabled. Scoped validation does not require whole-package MCP `test`.
 
+## Hooks
+
+If hooks block scoped analyze or scoped test commands, report the blocker
+and repair hooks — never bypass with `prepush`, whole-package MCP `test`,
+or other broad commands.
+
 ## MCP `test` exit code 66
 
-Known cwd bug for whole-package runs — only relevant when the user
-explicitly requests Tier-3-style full package validation locally:
-
-```bash
-cd flutter/packages/<package_name>
-very_good test -j 4
-```
+Known cwd bug for whole-package MCP `test` — only when the user
+explicitly requests that separate work (not a commit gate).

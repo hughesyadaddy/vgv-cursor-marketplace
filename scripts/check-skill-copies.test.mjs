@@ -5,9 +5,13 @@ import path from 'node:path';
 import { test } from 'node:test';
 
 import {
+  checkPolicyMirrors,
   checkSkillCopies,
+  checkWingspanCopies,
   defaultPluginDir,
   extractTrackedSections,
+  findForbiddenPolicyPatterns,
+  normalizePolicyDualHost,
 } from './check-skill-copies.mjs';
 
 const MAP_SECTION = ['## Parallel execution map', '', 'Shards table and `shards` JSON.', ''].join('\n');
@@ -105,6 +109,30 @@ test('tolerates trailing whitespace and CRLF differences', () => {
 });
 
 test('the real vgv-wingspan plugin passes', () => {
-  const { errors } = checkSkillCopies(defaultPluginDir());
+  const { errors } = checkWingspanCopies(defaultPluginDir());
   assert.deepEqual(errors, []);
+});
+
+test('normalizePolicyDualHost treats AskQuestion and AskUserQuestion as equivalent', () => {
+  const a = 'Then use **AskUserQuestion** with context.';
+  const b =
+    'Then use **AskQuestion** (Cursor) / **AskUserQuestion** (Claude Code) with context.';
+  assert.equal(normalizePolicyDualHost(a), normalizePolicyDualHost(b));
+});
+
+test('findForbiddenPolicyPatterns detects broad-gate loophole phrases', () => {
+  const bad = 'run that gate only when the repo documents it and the user requires it';
+  assert.ok(findForbiddenPolicyPatterns(bad).includes('when-repo-documents-user'));
+});
+
+test('checkPolicyMirrors flags policy mirror drift', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'policy-drift-'));
+  const base =
+    '# Scoped\n\n**Never mandatory**\n\nuser explicitly starts separate work\n\nnever bypass hooks\n';
+  write(path.join(dir, 'skills/shared/references/scoped-commit-validation.md'), base);
+  write(path.join(dir, 'cursor/skills/shared/references/scoped-commit-validation.md'), `${base}extra\n`);
+  write(path.join(dir, 'skills/shared/references/consumer-push-scripts.md'), '# Consumer\n');
+  write(path.join(dir, 'cursor/skills/shared/references/consumer-push-scripts.md'), '# Consumer\n');
+  const errors = checkPolicyMirrors(dir);
+  assert.ok(errors.some((e) => /policy mirror scoped-commit-validation/.test(e)));
 });

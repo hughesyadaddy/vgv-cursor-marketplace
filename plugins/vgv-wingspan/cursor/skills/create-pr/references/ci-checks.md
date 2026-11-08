@@ -13,5 +13,5 @@ Before commit, follow [scoped commit validation](../../shared/references/scoped-
 
 Do not translate `.github/workflows/ci.yaml` (or GitLab CI) into local
 commands. Do not run `pnpm prepush`, `push-gate`, markdownlint/cspell
-across the repo, or other broad CI-parity fanout unless the **consumer
-repo** documents that command as mandatory and the user requires it.
+across the repo, or other CI-parity fanout. Repo docs do not authorize
+broad local suites during `/create-pr`.

@@ -414,9 +414,12 @@ Whatever commits this build produced are local. Pushing and opening a PR is outw
   2. **Push and open the PR now**: proceed this once.
   3. **Always push automatically**: proceed, and save the preference to Claude memory (the user's own preference, never the project's AGENTS.md) so future builds skip this prompt.
 
-**Repos with their own push gate** (a `pr-review-push` / `push-gate` script, an `AGENTS.md` push-gate section, or a consumer plugin ship skill): follow [consumer-push-gate](references/consumer-push-gate.md) — run that gate only when the repo documents it and the user requires it.
+Consumer `prepush`, `push-gate`, and ship skills are **not** ship gates —
+see [consumer-push-scripts](../shared/references/consumer-push-scripts.md)
+and [consumer-push-gate](references/consumer-push-gate.md). Run them only
+when the user explicitly starts that separate work in chat.
 
-**Other repos:** call `/create-pr` — scoped validation already ran above;
+**Ship:** call `/create-pr` — scoped validation already ran above;
 create-pr re-validates only paths in the final commit if needed. The PR
 body uses the [PR template](references/pr-template.md).
 

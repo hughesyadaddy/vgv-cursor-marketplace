@@ -12,15 +12,17 @@ git push -u origin <branch>
 
 ## No mandatory pre-push suite
 
-Wingspan does **not** require `pnpm prepush`, `push-gate`,
-`pr-review-push`, whole-package tests, goldens, or CI-workflow replay
-before push. Consumer repos may define their own gate in `package.json` or
-`AGENTS.md`; run that gate only when the repo documents it and the user
-(or ship skill) requires it — not as a Wingspan default.
+Wingspan does **not** run `pnpm prepush`, `push-gate`, `pr-review-push`,
+whole-package tests, goldens, or CI-workflow replay before push. Repo
+docs (`AGENTS.md`, `package.json` scripts) do not override this.
 
-Preserve all other remote restrictions: branch protection, required
-reviews, deployment approvals, and no-force rules still apply on the
-forge.
+Broad validation happens only when the user explicitly starts separate
+work in chat — never as part of `/create-pr` or implicit ship.
+
+Preserve all remote restrictions: branch protection, required reviews,
+deployment approvals, hooks, and no-force rules still apply on the
+forge. If a hook blocks push, report it — do not bypass with a broader
+local gate.
 
 ## If the push fails
 
